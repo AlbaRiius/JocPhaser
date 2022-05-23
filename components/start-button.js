@@ -4,7 +4,7 @@ export class StartButton {
     }
 
     preload() {
-        this.relatedScene.load.spritesheet('button', 'images/start.png', { frameWidth: 190, frameHeight: 49 });
+        this.relatedScene.load.spritesheet('button', 'assets/images/start.png', { frameWidth: 190, frameHeight: 49 });
     }
 
     create() {
@@ -17,7 +17,7 @@ export class StartButton {
             this.startButton.setFrame(0);
         });
         this.startButton.on('pointerdown', () => {
-            this.relatedScene.scene.switch('game');
+            this.relatedScene.scene.switch('level1');
         });
     }
 }

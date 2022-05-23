@@ -4,11 +4,11 @@ export class CreditsButton {
     }
 
     preload() {
-        this.relatedScene.load.spritesheet('button', 'images/credentials.png', { frameWidth: 190, frameHeight: 49 });
+        this.relatedScene.load.spritesheet('buttonC', 'assets/images/credentials.png', { frameWidth: 190, frameHeight: 49 });
     }
 
     create() {
-        this.creditsButton = this.relatedScene.add.sprite(400, 300, 'button').setInteractive();
+        this.creditsButton = this.relatedScene.add.sprite(400, 300, 'buttonC').setInteractive();
 
         this.creditsButton.on('pointerover', () => {
             this.creditsButton.setFrame(1);
@@ -20,4 +20,4 @@ export class CreditsButton {
             this.relatedScene.scene.switch('credits');
         });
     }
-}
+} 

@@ -9,8 +9,8 @@ export class Initial extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', 'images/background.png');
-        this.load.image('initial', 'images/gamestart.png');
+        this.load.image('background', 'assets/images/background.png');
+        this.load.image('initial', 'assets/images/gamestart.png');
         this.startButton.preload();
         this.creditsButton.preload();
     }

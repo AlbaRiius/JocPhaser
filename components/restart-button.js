@@ -5,7 +5,7 @@ export class RestartButton {
     }
 
     preload() {
-        this.relatedScene.load.spritesheet('button', 'images/restart.png', { frameWidth: 190, frameHeight: 49 });
+        this.relatedScene.load.spritesheet('button', 'assets/images/restart.png', { frameWidth: 190, frameHeight: 49 });
     }
 
     create() {
@@ -18,7 +18,7 @@ export class RestartButton {
             this.startButton.setFrame(0);
         });
         this.startButton.on('pointerdown', () => {
-            this.relatedScene.scene.switch('game');
+            this.relatedScene.scene.switch('game1');
         });
     }
 }
