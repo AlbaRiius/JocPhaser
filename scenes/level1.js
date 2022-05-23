@@ -25,76 +25,73 @@ export class Level1 extends Phaser.Scene {
 
     this.add.image(0, 0, 'background').setOrigin(0, 0).setScale(2, 0.8);
     const platforms = map.createStaticLayer('Platforms', tileset, 0, 50);
+    platforms.setCollisionByExclusion(-1, true);
     this.spikes = map.createFromObjects('Spikes', 71, { key: 'spike' }, this);
-    // Move spikes down 200 pixel to match their original positions on the platforms
     this.spikes.forEach(element => {
       element.y += 45;
     });
 
     //Jugador
     this.player = this.physics.add.sprite(50, 320, 'player');
-    this.player.setBounce(0.1); // our player will bounce from items
-    this.player.setCollideWorldBounds(true); // don't go out of the map
-    this.physics.add.collider(platforms, this.player);
+    this.player.setBounce(0.1);
+    this.player.setCollideWorldBounds(true);
+    this.physics.add.collider(this.player, platforms);
+
+
+    //Caminar
+    this.anims.create({
+      key: 'walk',
+      frames: this.anims.generateFrameNames('player', {start: 2, end: 3}),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'idle',
+      frames: [{ key: 'player', frame: 'robo_player_0' }],
+      frameRate: 10,
+    });
+  
+    this.anims.create({
+      key: 'jump',
+      frames: [{ key: 'player', frame: 'robo_player_1' }],
+      frameRate: 20,
+    });
+
+    this.cursors = this.input.keyboard.createCursorKeys();
 
     this.scoreText = this.add.text(16, 16, 'POINTS: 0', { fontSize: '20px', fill: '#fff', fontFamily: 'verdana, arial, sans-serif' });
   }
 
   update() {
-    // if (this.cursors.left.isDown) {
-    //   this.platform.setVelocityX(-500);
-    //   if (this.ball.getData('glue')) {
-    //     this.ball.setVelocityX(-500);
-    //   }
-    // }
-    // else if (this.cursors.right.isDown) {
-    //   this.platform.setVelocityX(500);
-    //   if (this.ball.getData('glue')) {
-    //     this.ball.setVelocityX(500);
-    //   }
-    // }
-    // else {
-    //   this.platform.setVelocityX(0);
-    //   if (this.ball.getData('glue')) {
-    //     this.ball.setVelocityX(0);
-    //   }
-    // }
-
-    // if (this.ball.y > 500 && this.ball.active) {
-    //   console.log('fin', this.ball.y, this.ball, '--');
-    //   this.endGame();
-    // }
-
-    // if (this.cursors.up.isDown) {
-    //   if (this.ball.getData('glue')) {
-    //     this.ball.setVelocity(-60, -300);
-    //     this.ball.setData('glue', false);
-    //   }
-    // }
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-200);
+      if (this.player.body.onFloor()) {
+        this.player.play('walk', true);
+      }
+    } else if (this.cursors.right.isDown) {
+      this.player.setVelocityX(200);
+      if (this.player.body.onFloor()) {
+        this.player.play('walk', true);
+      }
+    } else {
+      this.player.setVelocityX(0);
+      if (this.player.body.onFloor()) {
+        this.player.play('idle', true);
+      }
+    }
+  
+    if ( this.cursors.up.isDown && this.player.body.onFloor()) {
+      this.player.setVelocityY(-350);
+    }
+  
+    // Faig que mire cap al costat cap on camina
+    if (this.player.body.velocity.x > 0) {
+      this.player.setFlipX(false);
+    } else if (this.player.body.velocity.x < 0) { 
+      this.player.setFlipX(true);
+    }
   }
-
-  // platformImpact(ball, platform) {
-  //   this.increasePoints(1);
-  //   let relativeImpact = ball.x - platform.x;
-  //   if (relativeImpact > 0) {
-  //     console.log('derecha!');
-  //     ball.setVelocityX(8 * relativeImpact);
-  //   } else if (relativeImpact < 0) {
-  //     console.log('izquierda!');
-  //     ball.setVelocityX(8 * relativeImpact);
-  //   } else {
-  //     console.log('centro!!');
-  //     ball.setVelocityX(Phaser.Math.Between(-10, 10))
-  //   }
-  // }
-
-  // brickImpact(ball, brick) {
-  //   brick.disableBody(true, true);
-  //   this.increasePoints(10);
-  //   if (this.bricks.countActive() === 0) {
-  //     this.endGame(true);
-  //   }
-  // }
 
   // increasePoints(points) {
   //   this.score += points;
