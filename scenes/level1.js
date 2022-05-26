@@ -41,7 +41,7 @@ export class Level1 extends Phaser.Scene {
     //Caminar
     this.anims.create({
       key: 'walk',
-      frames: this.anims.generateFrameNames('player', {start: 2, end: 3}),
+      frames: this.anims.generateFrameNames('player', { start: 2, end: 3 }),
       frameRate: 10,
       repeat: -1
     });
@@ -51,7 +51,7 @@ export class Level1 extends Phaser.Scene {
       frames: [{ key: 'player', frame: 'robo_player_0' }],
       frameRate: 10,
     });
-  
+
     this.anims.create({
       key: 'jump',
       frames: [{ key: 'player', frame: 'robo_player_1' }],
@@ -61,6 +61,21 @@ export class Level1 extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.scoreText = this.add.text(16, 16, 'POINTS: 0', { fontSize: '20px', fill: '#fff', fontFamily: 'verdana, arial, sans-serif' });
+
+
+    //Spikes
+    this.spikes = this.physics.add.group({
+      allowGravity: false,
+      immovable: true
+    });
+    map.getObjectLayer('Spikes').objects.forEach((spike) => {
+      const spikeSprite = this.spikes.create(spike.x, spike.y + 45 - spike.height, 'spike').setOrigin(0);
+      spikeSprite.body.setSize(spike.width, spike.height - 20).setOffset(0, 20);
+    });
+
+    this.physics.add.collider(this.player, this.spikes, this.playerHit(this.player), null, this);
+
+
   }
 
   update() {
@@ -80,17 +95,34 @@ export class Level1 extends Phaser.Scene {
         this.player.play('idle', true);
       }
     }
-  
-    if ( this.cursors.up.isDown && this.player.body.onFloor()) {
-      this.player.setVelocityY(-350);
+
+    if (this.cursors.up.isDown && this.player.body.onFloor()) {
+      console.log("Salto");
+      this.player.setVelocityY(-330);
+      this.player.play('jump', true);
     }
-  
+
     // Faig que mire cap al costat cap on camina
     if (this.player.body.velocity.x > 0) {
       this.player.setFlipX(false);
-    } else if (this.player.body.velocity.x < 0) { 
+    } else if (this.player.body.velocity.x < 0) {
       this.player.setFlipX(true);
     }
+  }
+
+  playerHit(player) {
+    player.setVelocity(0, 0);
+    player.setX(50);
+    player.setY(320);
+    player.play('idle', true);
+    player.setAlpha(0);
+    let tw = this.tweens.add({
+      targets: player,
+      alpha: 1,
+      duration: 100,
+      ease: 'Linear',
+      repeat: 5,
+    });
   }
 
   // increasePoints(points) {
